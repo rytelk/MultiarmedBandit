@@ -9,7 +9,7 @@ totalPayout = 0
 averagePayouts = []
 machineRunCounts = []
 maxIterations = 1000
-epses = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+epses = [0.0, 0.01, 0.1, 0.2]
 avgRewardY = []
 stepsX = []
 
@@ -20,10 +20,30 @@ def createMachines():
         reward = random.randint(1, 101)
         rewardProbability = random.uniform(0, 1)
         machines.append(Machine(reward, rewardProbability))
+    createMachinesProperties()
+
+
+def createMachinesProperties():
+    for i in range(machinesCount):
         machinesTotalPayouts.append(0)
         averagePayouts.append(0)
         machineRunCounts.append(0)
 
+def reset():
+    global avgRewardY
+    global stepsX
+    global totalPayout
+    global machinesTotalPayouts
+    global averagePayouts
+    global machineRunCounts
+
+    stepsX = []
+    avgRewardY = []
+    machinesTotalPayouts = []
+    averagePayouts = []
+    machineRunCounts = []
+    totalPayout = 0
+    createMachinesProperties()
 
 def printMachines():
     for idx, machine in enumerate(machines):
@@ -75,6 +95,7 @@ if __name__ == '__main__':
             print(f"Average payout: {totalPayout / (i + 1)} Iteration {i}")
             avgRewardY.append(totalPayout / (i + 1))
             stepsX.append(i)
-        # TODO - rysowanie wielu epsów
-        plt.plot(stepsX, avgRewardY)
-        plt.show()
+        line, = plt.plot(stepsX, avgRewardY, label = f"Epsilon: {eps}")
+        reset()
+    plt.legend()
+    plt.show()
