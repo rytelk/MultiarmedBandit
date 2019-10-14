@@ -52,7 +52,7 @@ def play(index, iteration):
 
 
 if __name__ == '__main__':
-    random.seed(100)
+    random.seed(50)
 
     createMachines()
     printMachines()
@@ -69,3 +69,4 @@ if __name__ == '__main__':
             else:
                 index = getRandomMachineIndex()
             play(index, i)
+    print(f"Average payout: {totalPayout / iterationsCount}")
