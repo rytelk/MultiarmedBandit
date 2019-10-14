@@ -1,5 +1,6 @@
 import random
 from Machine import Machine
+import matplotlib.pyplot as plt
 
 machines = []
 machinesCount = 10
@@ -8,7 +9,9 @@ totalPayout = 0
 averagePayouts = []
 machineRunCounts = []
 maxIterationsCount = 1000
-eps = 0.1
+eps = 0.01
+avgRewardY = []
+stepsX = []
 
 explorationRatio = 0.2
 
@@ -86,5 +89,10 @@ if __name__ == '__main__':
                     index = getRandomMachineIndex()
                 play(index, i)
         print(f"Average payout: {totalPayout / currentMaxIterations} Max iterations {currentMaxIterations}")
+        stepsX.append(currentMaxIterations)
+        avgRewardY.append(totalPayout / currentMaxIterations)
         resetMachineProperties()
+
+    plt.plot(stepsX, avgRewardY)
+    plt.show()
 
