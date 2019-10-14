@@ -8,8 +8,8 @@ machinesTotalPayouts = []
 totalPayout = 0
 averagePayouts = []
 machineRunCounts = []
-maxIterationsCount = 1000
-eps = 0.01
+maxIterations = 1000
+eps = 0.5
 avgRewardY = []
 stepsX = []
 
@@ -20,25 +20,10 @@ def createMachines():
         reward = random.randint(1, 101)
         rewardProbability = random.uniform(0, 1)
         machines.append(Machine(reward, rewardProbability))
-    createMachineProperties()
-
-def createMachineProperties():
-    for i in range(machinesCount):
         machinesTotalPayouts.append(0)
         averagePayouts.append(0)
         machineRunCounts.append(0)
 
-def resetMachineProperties():
-    global machinesTotalPayouts
-    global totalPayout
-    global averagePayouts
-    global machineRunCounts
-
-    machinesTotalPayouts = []
-    totalPayout = 0
-    averagePayouts = []
-    machineRunCounts = []
-    createMachineProperties()
 
 def printMachines():
     for idx, machine in enumerate(machines):
@@ -69,30 +54,27 @@ def play(index, iteration):
 
 
 if __name__ == '__main__':
-    random.seed(50)
+    random.seed(333)
 
     createMachines()
     printMachines()
 
-    for currentMaxIterations in range(1, maxIterationsCount + 1):
-        explorationIterations = currentMaxIterations * explorationRatio
-        for i in range(currentMaxIterations + 1):
-            if i < explorationIterations:
-                index = getRandomMachineIndex()
-                play(index, i)
-            else:
-                explorationProbability = random.uniform(0, 1)
+    explorationIterations = maxIterations * explorationRatio
+    for i in range(maxIterations + 1):
+        if i < explorationIterations:
+            index = getRandomMachineIndex()
+            play(index, i)
+        else:
+            explorationProbability = random.uniform(0, 1)
 
-                if(explorationProbability > eps):
-                    index = getHighestPayoutMachineIndex()
-                else:
-                    index = getRandomMachineIndex()
-                play(index, i)
-        print(f"Average payout: {totalPayout / currentMaxIterations} Max iterations {currentMaxIterations}")
-        stepsX.append(currentMaxIterations)
-        avgRewardY.append(totalPayout / currentMaxIterations)
-        resetMachineProperties()
+            if(explorationProbability > eps):
+                index = getHighestPayoutMachineIndex()
+            else:
+                index = getRandomMachineIndex()
+            play(index, i)
+        print(f"Average payout: {totalPayout / (i + 1)} Iteration {i}")
+        avgRewardY.append(totalPayout / (i + 1))
+        stepsX.append(i)
 
     plt.plot(stepsX, avgRewardY)
     plt.show()
-
