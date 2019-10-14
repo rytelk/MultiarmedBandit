@@ -21,3 +21,10 @@ if __name__ == '__main__':
     printMachines(machines)
     print("test")
 
+def playMethod(machineRunCounts):
+    global machinesCount;
+    index = randint(0, machinesCount);
+    p = random.uniform(0, 1);
+    machineRunCounts[index] = machineRunCounts[index] + 1;
+    # TODO
+    return;
