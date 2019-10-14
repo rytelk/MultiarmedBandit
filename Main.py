@@ -13,7 +13,7 @@ epses = [0.0, 0.01, 0.1, 0.2]
 avgRewardY = []
 stepsX = []
 
-explorationRatio = 0.2
+explorationRatio = 0.01
 
 def createMachines():
     for i in range(machinesCount):
