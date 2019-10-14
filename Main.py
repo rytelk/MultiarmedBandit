@@ -1,6 +1,15 @@
 import random
 from Machine import Machine
 
+# ------------------------------------
+# Zainicjalizować według Grześka
+machines;
+totalPayout;
+averagePayout;
+totalPayout2;
+machineRunCounts;
+# ------------------------------------
+
 machinesCount = 10
 
 def createMachines():
@@ -21,10 +30,25 @@ if __name__ == '__main__':
     printMachines(machines)
     print("test")
 
-def playMethod(machineRunCounts):
+def playMethod(i):
+    
+    global machines;
+    global totalPayout;
+    global averagePayout;
+    global totalPayout2;
     global machinesCount;
+    global machineRunCounts;
+    
     index = randint(0, machinesCount);
     p = random.uniform(0, 1);
     machineRunCounts[index] = machineRunCounts[index] + 1;
-    # TODO
+    
+    if p > (1 - machines[index].Probability):
+        totalPayout[index] += machines[index].reward;
+        totalPayout2       += machines[index].reward;
+        
+    averagePayout[index] = totalPayout[index] / machineRunCounts[index];
+    print("iteracja: " + i + " [" + ", ".join(averagePayout) + "]");
+    print("Total payout: " + totalPayout2);
+    
     return;
