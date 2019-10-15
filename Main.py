@@ -1,6 +1,7 @@
 import random
 from Machine import Machine
 import matplotlib.pyplot as plt
+import numpy as nmp
 
 machines = []
 machinesCount = 10
@@ -12,14 +13,14 @@ maxIterations = 1000
 epses = [0.0, 0.01, 0.1, 0.2]
 avgRewardY = []
 stepsX = []
+randomSeed = 3
 
 explorationRatio = 0.01
 
 def createMachines():
     for i in range(machinesCount):
-        reward = random.randint(1, 101)
-        rewardProbability = random.uniform(0, 1)
-        machines.append(Machine(reward, rewardProbability))
+        reward = nmp.random.normal(0, 1)
+        machines.append(Machine(reward))
     createMachinesProperties()
 
 
@@ -44,37 +45,26 @@ def reset():
     machineRunCounts = []
     totalPayout = 0
     createMachinesProperties()
+    random.seed(randomSeed)
+    nmp.random.seed(randomSeed)
 
 def printMachines():
     for idx, machine in enumerate(machines):
         print(f"Machine #{idx}: {machine}")
 
 
-def getHighestPayoutMachineIndex():
-    return averagePayouts.index(max(averagePayouts))
-
-
-def getRandomMachineIndex():
-    return random.randint(0, machinesCount - 1)
-
-
 def play(index, iteration):
     global totalPayout
 
-    p = random.uniform(0, 1)
+    machinesTotalPayouts[index] += machines[index].reward
     machineRunCounts[index] += 1
-
-    if p > (1 - machines[index].rewardProbability):
-        machinesTotalPayouts[index] += machines[index].reward
-        totalPayout += machines[index].reward
-
+    totalPayout += machines[index].reward
     averagePayouts[index] = machinesTotalPayouts[index] / machineRunCounts[index]
-    # print(f"Iteracja: {iteration} [{' '.join(str(x) for x in averagePayouts)}]")
-    # print(f"Total payout: {totalPayout}")
 
 
 if __name__ == '__main__':
-    random.seed(333)
+    random.seed(randomSeed)
+    nmp.random.seed(randomSeed)
 
     createMachines()
     printMachines()
@@ -83,19 +73,24 @@ if __name__ == '__main__':
     for eps in epses:
         for i in range(maxIterations + 1):
             if i < explorationIterations:
-                index = getRandomMachineIndex()
+                index = random.randint(0, machinesCount - 1)
                 play(index, i)
             else:
                 explorationProbability = random.uniform(0, 1)
                 if(explorationProbability > eps):
-                    index = getHighestPayoutMachineIndex()
+                    index =  nmp.argmax(averagePayouts)
                 else:
-                    index = getRandomMachineIndex()
+                    index = random.randint(0, machinesCount - 1)
                 play(index, i)
+
             print(f"Average payout: {totalPayout / (i + 1)} Iteration {i}")
             avgRewardY.append(totalPayout / (i + 1))
             stepsX.append(i)
         line, = plt.plot(stepsX, avgRewardY, label = f"Epsilon: {eps}")
         reset()
+
+    plt.title("Greedy-epsilon policy")
+    plt.xlabel(f"Steps")
+    plt.ylabel("Average payout from all machines")
     plt.legend()
     plt.show()
